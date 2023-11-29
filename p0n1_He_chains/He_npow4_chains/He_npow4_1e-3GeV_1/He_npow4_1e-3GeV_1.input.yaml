@@ -1,0 +1,125 @@
+theory:
+  classy:
+    extra_args:
+      N_ncdm: 1
+      N_ur: 2.0328
+      lensing: true
+      omega_cdm: 0.0
+      npow_dmeff: 4
+      dmeff_target: helium
+      m_dmeff: 0.001
+likelihood:
+  planck_2018_lowl.TT:
+    path: /work2/07416/smoltner/stampede2/planck_2018/code/plc_3.0/plc-3.01/
+    clik_file: /work2/07416/smoltner/stampede2/planck_2018/baseline/plc_3.0/low_l/commander/commander_dx12_v3_2_29.clik
+  planck_2018_lowl.EE:
+    path: /work2/07416/smoltner/stampede2/planck_2018/code/plc_3.0/plc-3.01/
+    clik_file: /work2/07416/smoltner/stampede2/planck_2018/baseline/plc_3.0/low_l/simall/simall_100x143_offlike5_EE_Aplanck_B.clik
+  planck_2018_highl_plik.TTTEEE_lite:
+    path: /work2/07416/smoltner/stampede2/planck_2018/code/plc_3.0/plc-3.01/
+    clik_file: /work2/07416/smoltner/stampede2/planck_2018/baseline/plc_3.0/hi_l/plik_lite/plik_lite_v22_TTTEEE.clik
+  planck_2018_lensing.clik:
+    path: /work2/07416/smoltner/stampede2/planck_2018/code/plc_3.0/plc-3.01/
+    clik_file: /work2/07416/smoltner/stampede2/planck_2018/baseline/plc_3.0/lensing/smicadx12_Dec5_ftl_mv2_ndclpp_p_teb_consext8.clik_lensing
+params:
+  log_sigma_dmeff:
+    prior:
+      min: -19
+      max: -12
+    drop: true
+    latex: \log_{10}(\sigma_\mathrm{He})
+  sigma_dmeff:
+    value: 'lambda log_sigma_dmeff: 10**log_sigma_dmeff'
+    latex: \sigma_\mathrm{He}
+  logA:
+    prior:
+      min: 1.61
+      max: 3.91
+    ref:
+      dist: norm
+      loc: 3.05
+      scale: 0.001
+    proposal: 0.001
+    latex: \log(10^{10} A_\mathrm{s})
+    drop: true
+  A_s:
+    value: 'lambda logA: 1e-10*np.exp(logA)'
+    latex: A_\mathrm{s}
+  n_s:
+    prior:
+      min: 0.8
+      max: 1.2
+    ref:
+      dist: norm
+      loc: 0.965
+      scale: 0.004
+    proposal: 0.002
+    latex: n_\mathrm{s}
+  theta_s_1e2:
+    prior:
+      min: 0.5
+      max: 10
+    ref:
+      dist: norm
+      loc: 1.0416
+      scale: 0.0004
+    proposal: 0.0002
+    latex: 100\theta_\mathrm{s}
+    drop: true
+  100*theta_s:
+    value: 'lambda theta_s_1e2: theta_s_1e2'
+    derived: false
+  H0:
+    latex: H_0
+  omega_b:
+    prior:
+      min: 0.005
+      max: 0.1
+    ref:
+      dist: norm
+      loc: 0.0224
+      scale: 0.0001
+    proposal: 0.0001
+    latex: \Omega_\mathrm{b} h^2
+  omega_dmeff:
+    prior:
+      min: 0.001
+      max: 0.99
+    ref:
+      dist: norm
+      loc: 0.12
+      scale: 0.001
+    proposal: 0.0005
+    latex: \Omega_\mathrm{dm} h^2
+  Omega_m:
+    latex: \Omega_\mathrm{m}
+  m_ncdm:
+    value: 0.06
+    renames: mnu
+  tau_reio:
+    prior:
+      min: 0.01
+      max: 0.8
+    ref:
+      dist: norm
+      loc: 0.055
+      scale: 0.006
+    proposal: 0.003
+    latex: \tau_\mathrm{reio}
+  z_reio:
+    latex: z_\mathrm{re}
+  sigma8:
+    latex: \sigma_8
+  clamp:
+    derived: 'lambda A_s, tau_reio: 1e9*A_s*np.exp(-2*tau_reio)'
+    latex: 10^9 A_\mathrm{s} e^{-2\tau}
+sampler:
+  mcmc:
+    learn_every: 10d
+    covmat: /scratch/07416/smoltner/base_plikHM_TTTEEE_lowTEB_lensing.covmat
+    drag: true
+    oversample_power: 0.4
+    proposal_scale: 1.9
+output: He_npow4_1e-3GeV_1
+packages_path: null
+test: false
